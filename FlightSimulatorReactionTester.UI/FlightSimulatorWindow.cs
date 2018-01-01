@@ -45,7 +45,6 @@ namespace FlightSimulatorReactionTester.UI
 
         public void ChangeArrow()
         {
-            _changeArrowTimer.Stop();
             Arrow currentArrow;
             if (Enum.TryParse(_futureEventEnumerator.Current.Arrow, out currentArrow))
             {
@@ -81,7 +80,7 @@ namespace FlightSimulatorReactionTester.UI
                 });
                 if (_futureEventEnumerator.MoveNext())
                 {
-                    _changeArrowTimer = new MultimediaTimer(_futureEventEnumerator.Current.Delay, ChangeArrow);
+                    _changeArrowTimer = new MultimediaTimer(TimeSpan.FromMilliseconds(_futureEventEnumerator.Current.Delay), ChangeArrow, TimerEventType.TIME_ONESHOT);
                     _changeArrowTimer.Start();
                 }
                 else
@@ -113,7 +112,7 @@ namespace FlightSimulatorReactionTester.UI
             var futureEvent = _futureEventEnumerator.Current;
             MouseHook.Start();
             MouseHook.MouseAction += MouseHook_MouseAction;
-            _changeArrowTimer = new MultimediaTimer(futureEvent.Delay, ChangeArrow);
+            _changeArrowTimer = new MultimediaTimer(TimeSpan.FromMilliseconds(futureEvent.Delay), ChangeArrow, TimerEventType.TIME_ONESHOT);
             _changeArrowTimer.Start();
         }
 
