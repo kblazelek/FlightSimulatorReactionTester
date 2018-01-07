@@ -26,6 +26,7 @@ namespace FlightSimulatorReactionTester.Common
         private delegate void TimerEventHandler(int id, int msg, IntPtr user, int dw1, int dw2);
         private TimerEventHandler _handler;
         private TimerEventType _timerEventType;
+        private readonly uint _timerResolution = 1;
 
         #region P/Invoke Statements
         [DllImport("winmm.dll")]
@@ -38,6 +39,7 @@ namespace FlightSimulatorReactionTester.Common
         private static extern int timeEndPeriod(int msec);
         #endregion
 
+        #region Constructors
         /// <summary>
         /// Creates instance of MultimediaTimer
         /// </summary>
@@ -52,6 +54,19 @@ namespace FlightSimulatorReactionTester.Common
         }
 
         /// <summary>
+        /// Creates instance of MultimediaTimer with given timer resolution
+        /// </summary>
+        /// <param name="interval">Delay between timer ticks</param>
+        /// <param name="callback">Function called after interval</param>
+        /// <param name="timerEventType">Determines whether <paramref name="callback"/> should be called once or periodically</param>
+        /// <param name="timerResolution">Timer resulution in ms. A lower value specifies a higher (more accurate) resolution</param>
+        public MultimediaTimer(TimeSpan interval, Action callback, TimerEventType timerEventType, uint timerResolution) : this(interval, callback, timerEventType)
+        {
+            _timerResolution = timerResolution;
+        }
+        #endregion
+
+        /// <summary>
         /// Method called periodically from multimedia timer
         /// </summary>
         private void TimerHandler(int id, int msg, IntPtr user, int dw1, int dw2)
@@ -64,7 +79,10 @@ namespace FlightSimulatorReactionTester.Common
         /// </summary>
         public void Start()
         {
-            timeBeginPeriod(1);
+            // Begin using timer (make sure to finish with timeEndPeriod)
+            timeBeginPeriod((int)_timerResolution);
+
+            // Start the timer
             _handler = new TimerEventHandler(TimerHandler);
             _timerId = timeSetEvent(_interval, 0, _handler, IntPtr.Zero, (int)_timerEventType);
         }
@@ -74,8 +92,11 @@ namespace FlightSimulatorReactionTester.Common
         /// </summary>
         public void Stop()
         {
+            // Stop the timer
             timeKillEvent(_timerId);
-            timeEndPeriod(1);
+
+            // Finish using timer (should be called after timeBeginPeriod)
+            timeEndPeriod((int)_timerResolution);
             _timerId = 0;
         }
     }

@@ -94,7 +94,7 @@ namespace FlightSimulatorReactionTester.UI
         {
             // Program.FlightSimulatorWindow.Close();
             MouseHook.MouseAction -= MouseHook_MouseAction;
-            MouseHook.stop();
+            MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
             this.Invoke((MethodInvoker)delegate
