@@ -93,7 +93,7 @@ namespace FlightSimulatorReactionTester.UI
         public void StopSimulation()
         {
             // Program.FlightSimulatorWindow.Close();
-            MouseHook.MouseAction -= MouseHook_MouseAction;
+            MouseHook.LeftButtonDown -= MouseHook_MouseAction;
             MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
@@ -111,7 +111,7 @@ namespace FlightSimulatorReactionTester.UI
             _futureEventEnumerator.MoveNext();
             var futureEvent = _futureEventEnumerator.Current;
             MouseHook.Start();
-            MouseHook.MouseAction += MouseHook_MouseAction;
+            MouseHook.LeftButtonDown += MouseHook_MouseAction;
             _changeArrowTimer = new MultimediaTimer(TimeSpan.FromMilliseconds(futureEvent.Delay), ChangeArrow, TimerEventType.TIME_ONESHOT);
             _changeArrowTimer.Start();
         }
