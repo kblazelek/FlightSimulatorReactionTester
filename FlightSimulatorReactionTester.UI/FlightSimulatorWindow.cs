@@ -54,11 +54,12 @@ namespace FlightSimulatorReactionTester.UI
                 });
                 _reactionTimer = new Stopwatch();
                 _reactionTimer.Start();
+                MouseHook.ChangeButtonEvent(ArrowToButtonEvent(currentArrow));
                 WatchForMouseClicks = true;
             }
             else
             {
-                throw new Exception("Unknown arrow");
+                throw new Exception($"Unknown arrow {_futureEventEnumerator.Current.Arrow}");
             }
         }
 
@@ -68,7 +69,6 @@ namespace FlightSimulatorReactionTester.UI
             {
                 WatchForMouseClicks = false;
                 _reactionTimer.Stop();
-                // Consider thread safety
                 this.Invoke((MethodInvoker)delegate
                 {
                     if (_pictureBox.Image != null)
@@ -93,7 +93,7 @@ namespace FlightSimulatorReactionTester.UI
         public void StopSimulation()
         {
             // Program.FlightSimulatorWindow.Close();
-            MouseHook.LeftButtonDown -= MouseHook_MouseAction;
+            MouseHook.Action -= MouseHook_MouseAction;
             MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
@@ -110,10 +110,35 @@ namespace FlightSimulatorReactionTester.UI
             _futureEventEnumerator = futureEventSet.GetEnumerator();
             _futureEventEnumerator.MoveNext();
             var futureEvent = _futureEventEnumerator.Current;
-            MouseHook.Start();
-            MouseHook.LeftButtonDown += MouseHook_MouseAction;
+            Arrow currentArrow;
+            if (Enum.TryParse(_futureEventEnumerator.Current.Arrow, out currentArrow))
+            {
+            }
+            else
+            {
+                throw new Exception($"Unknown arrow {_futureEventEnumerator.Current.Arrow}");
+            }
+            MouseHook.Start(ArrowToButtonEvent(currentArrow));
+            MouseHook.Action += MouseHook_MouseAction;
             _changeArrowTimer = new MultimediaTimer(TimeSpan.FromMilliseconds(futureEvent.Delay), ChangeArrow, TimerEventType.TIME_ONESHOT);
             _changeArrowTimer.Start();
+        }
+
+        private ButtonEvent ArrowToButtonEvent(Arrow arrow)
+        {
+            switch (arrow)
+            {
+                case Arrow.Up:
+                    return ButtonEvent.ForwardButtonDown;
+                case Arrow.Right:
+                    return ButtonEvent.RightButtonDown;
+                case Arrow.Down:
+                    return ButtonEvent.BackButtonDown;
+                case Arrow.Left:
+                    return ButtonEvent.LeftButtonDown;
+                default:
+                    throw new Exception($"Unknown arrow {arrow}");
+            }
         }
 
         public FlightSimulatorWindow()

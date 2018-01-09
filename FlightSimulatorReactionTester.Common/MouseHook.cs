@@ -4,16 +4,23 @@ using System.Runtime.InteropServices;
 
 namespace FlightSimulatorReactionTester.Common
 {
+    public enum ButtonEvent
+    {
+        LeftButtonDown,
+        RightButtonDown,
+        BackButtonDown,
+        ForwardButtonDown
+    }
+
     public static class MouseHook
     {
-        public static event EventHandler LeftButtonDown = delegate { };
-        public static event EventHandler RightButtonDown = delegate { };
-        public static event EventHandler BackButtonDown = delegate { };
-        public static event EventHandler ForwardButtonDown = delegate { };
+        public static event EventHandler Action = delegate { };
         private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
         private static LowLevelMouseProc _proc = HookCallback;
         private static IntPtr _hookID = IntPtr.Zero;
         private const int WH_MOUSE_LL = 14;
+        private static MouseMessage _mouseMessageToListen;
+        private static XButton _xButtonToListen;
 
         #region P/Invoke statements
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -32,13 +39,37 @@ namespace FlightSimulatorReactionTester.Common
         /// <summary>
         /// Starts listening for system mouse events
         /// </summary>
-        public static void Start()
+        public static void Start(ButtonEvent buttonEvent)
         {
+            ChangeButtonEvent(buttonEvent);
             using (Process curProcess = Process.GetCurrentProcess())
             using (ProcessModule curModule = curProcess.MainModule)
             {
                 // Sets hook to listen for mouse events
                 _hookID = SetWindowsHookEx(WH_MOUSE_LL, _proc, GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        public static void ChangeButtonEvent(ButtonEvent buttonEvent)
+        {
+            switch (buttonEvent)
+            {
+                case ButtonEvent.LeftButtonDown:
+                    _mouseMessageToListen = MouseMessage.WM_LBUTTONDOWN;
+                    break;
+                case ButtonEvent.RightButtonDown:
+                    _mouseMessageToListen = MouseMessage.WM_RBUTTONDOWN;
+                    break;
+                case ButtonEvent.BackButtonDown:
+                    _mouseMessageToListen = MouseMessage.WM_XBUTTONDOWN;
+                    _xButtonToListen = XButton.Back;
+                    break;
+                case ButtonEvent.ForwardButtonDown:
+                    _mouseMessageToListen = MouseMessage.WM_XBUTTONDOWN;
+                    _xButtonToListen = XButton.Forward;
+                    break;
+                default:
+                    throw new Exception($"Unexpected buttonEvent {buttonEvent}");
             }
         }
 
@@ -62,27 +93,36 @@ namespace FlightSimulatorReactionTester.Common
             if (nCode >= 0)
             {
                 MSLLHOOKSTRUCT hookStruct;
-                switch ((MouseMessages)wParam)
+                switch ((MouseMessage)wParam)
                 {
-                    case MouseMessages.WM_LBUTTONDOWN:
+                    case MouseMessage.WM_LBUTTONDOWN:
                         // Inform subscribers about mouse event
-                        LeftButtonDown?.Invoke(null, EventArgs.Empty);
-                        break;
-                    case MouseMessages.WM_RBUTTONDOWN:
-                        // Inform subscribers about mouse event
-                        RightButtonDown?.Invoke(null, EventArgs.Empty);
-                        break;
-                    case MouseMessages.WM_XBUTTONDOWN:
-                        KeyStates fwKeys = GetKeyStateWParam(lParam);
-                        hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                        var mouseDataHI = HIWORD((IntPtr)hookStruct.mouseData);
-                        if (mouseDataHI == 0x0001)
+                        if (_mouseMessageToListen == MouseMessage.WM_LBUTTONDOWN)
                         {
-                            BackButtonDown?.Invoke(null, EventArgs.Empty);
+                            Action?.Invoke(null, EventArgs.Empty);
                         }
-                        else if (mouseDataHI == 0x0002)
+                        break;
+                    case MouseMessage.WM_RBUTTONDOWN:
+                        // Inform subscribers about mouse event
+                        if (_mouseMessageToListen == MouseMessage.WM_RBUTTONDOWN)
                         {
-                            ForwardButtonDown?.Invoke(null, EventArgs.Empty);
+                            Action?.Invoke(null, EventArgs.Empty);
+                        }
+                        break;
+                    case MouseMessage.WM_XBUTTONDOWN:
+                        if (_mouseMessageToListen == MouseMessage.WM_XBUTTONDOWN)
+                        {
+                            KeyState fwKeys = GetKeyStateWParam(lParam);
+                            hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                            var mouseDataHI = HIWORD((IntPtr)hookStruct.mouseData);
+                            if (mouseDataHI == (ushort)XButton.Back && _xButtonToListen == XButton.Back)
+                            {
+                                Action?.Invoke(null, EventArgs.Empty);
+                            }
+                            else if (mouseDataHI == (ushort)XButton.Forward && _xButtonToListen == XButton.Forward)
+                            {
+                                Action?.Invoke(null, EventArgs.Empty);
+                            }
                         }
                         break;
                 }
@@ -127,20 +167,24 @@ namespace FlightSimulatorReactionTester.Common
                 destination[destinationIndex] = nextByte;
             }
         }
-        public static KeyStates GetKeyStateWParam(IntPtr wParam)
+        public static KeyState GetKeyStateWParam(IntPtr wParam)
         {
-
             byte[] source = BitConverter.GetBytes(wParam.ToInt64());
             byte[] intermediate = new byte[2];
             CopyLeastSignificantBytes(source, intermediate);
             byte[] final = new byte[4];
             CopyLeastSignificantBytes(intermediate, final);
+            return (KeyState)BitConverter.ToInt32(final, 0);
+        }
 
-            return (KeyStates)BitConverter.ToInt32(final, 0);
+        private enum XButton : ushort
+        {
+            Back = 0x0001,
+            Forward = 0x0002
         }
 
         [Flags]
-        public enum KeyStates : int
+        public enum KeyState : int
         {
 
             /// <summary>
@@ -184,7 +228,7 @@ namespace FlightSimulatorReactionTester.Common
             MK_XBUTTON2 = 0x0040,
         }
 
-        private enum MouseMessages
+        private enum MouseMessage
         {
             WM_LBUTTONDOWN = 0x0201,
             WM_LBUTTONUP = 0x0202,
