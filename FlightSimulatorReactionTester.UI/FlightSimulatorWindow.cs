@@ -25,6 +25,7 @@ namespace FlightSimulatorReactionTester.UI
         readonly object _watchForMouseClicksLock = new object();
         static MultimediaTimer _changeArrowTimer;
         static Stopwatch _reactionTimer;
+        public event Action SimulationEnding;
         bool WatchForMouseClicks
         {
             get
@@ -97,9 +98,10 @@ namespace FlightSimulatorReactionTester.UI
             MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
+            SimulationEnding?.Invoke();
             this.Invoke((MethodInvoker)delegate
             {
-                this.Close();
+                this.Hide();
             });
         }
 

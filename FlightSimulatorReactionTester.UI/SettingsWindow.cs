@@ -84,7 +84,7 @@ namespace FlightSimulatorReactionTester.UI
                 if(Program.FlightSimulatorWindow == null)
                 {
                     Program.FlightSimulatorWindow = new FlightSimulatorWindow();
-                    Program.FlightSimulatorWindow.FormClosing += delegate {
+                    Program.FlightSimulatorWindow.SimulationEnding += delegate {
                         var rectionTimes = Program.FlightSimulatorWindow.GetReactionTimes();
                         foreach(var reactionTime in rectionTimes)
                         {
