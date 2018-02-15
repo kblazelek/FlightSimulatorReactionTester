@@ -1,6 +1,7 @@
 ﻿using FlightSimulatorReactionTester.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -24,12 +25,15 @@ namespace FlightSimulatorReactionTester.FutureEventSetEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FutureEventSet futureEventSet;
+        public FutureEventSet futureEventSet { get; set; }
+        public ObservableCollection<string> Arrows { get; set; } = new ObservableCollection<string>() { "Left", "Right", "Up", "Down" };
 
         public MainWindow()
         {
             InitializeComponent();
-            futureEventSet = (FutureEventSet)Resources["FutureEventSet"];
+            this.DataContext = this;
+            futureEventSet = new FutureEventSet();
+            arrowColumn.ItemsSource = Arrows;
         }
 
         private void LoadFile()
@@ -42,6 +46,7 @@ namespace FlightSimulatorReactionTester.FutureEventSetEditor
             {
                 string filename = dlg.FileName;
                 FutureEventSet futureEvents = FutureEventSet.Load(filename);
+                futureEventSet.Clear();
                 foreach (var futureEvent in futureEvents)
                 {
                     futureEventSet.Add(futureEvent);

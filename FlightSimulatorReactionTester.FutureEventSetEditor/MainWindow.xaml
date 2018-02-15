@@ -10,9 +10,9 @@
         Height="350"
         Width="525">
     <Window.Resources>
-        <common:FutureEventSet x:Key="FutureEventSet" />
+        <!--<common:FutureEventSet x:Key="FutureEventSet" />
         <CollectionViewSource x:Key="FutureEventSetViewSource"
-                              Source="{StaticResource FutureEventSet}" />
+                              Source="{StaticResource FutureEventSet}" />-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,8 +20,22 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DataGrid Name="dataGrid"
+                  AutoGenerateColumns="False"
                   Margin="2"
-                  ItemsSource="{Binding Source={StaticResource FutureEventSetViewSource}}" />
+                  ItemsSource="{Binding futureEventSet}">
+            <DataGrid.Columns>
+                <DataGridComboBoxColumn x:Name="arrowColumn" Width="*" Header="Arrow" SelectedItemBinding="{Binding Arrow}">
+                    <!--<DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>-->
+                </DataGridComboBoxColumn>
+                <local:DataGridNumericColumn Header="Delay [ms]" Width="*" Binding="{Binding Delay}">
+                    
+                </local:DataGridNumericColumn>
+            </DataGrid.Columns>
+        </DataGrid>
         <StackPanel Grid.Row="1"
                     Margin="2"
                     Orientation="Horizontal"
