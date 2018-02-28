@@ -38,9 +38,9 @@ namespace FlightSimulatorReactionTester.UI
         private void ClientWindow_Load(object sender, EventArgs e)
         {
             this.labelLoadedFutureEventSet.Text = "No Future Event Set selected";
-            var filename = @"C:\Users\Traxx\Desktop\FES.xml";
-            futureEventSet = FutureEventSet.Load(filename);
-            labelLoadedFutureEventSet.Text = filename;
+            //var filename = @"C:\Users\Traxx\Desktop\FES.xml";
+            //futureEventSet = FutureEventSet.Load(filename);
+            //labelLoadedFutureEventSet.Text = filename;
         }
 
         private void LoadFile()

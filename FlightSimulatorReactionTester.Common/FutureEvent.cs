@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace FlightSimulatorReactionTester.Common
 {
+    /// <summary>
+    /// Represents an event to show the <see cref="Arrow"/> after <see cref="Delay"/> milliseconds
+    /// </summary>
     [Serializable]
     public class FutureEvent : INotifyPropertyChanged
     {
