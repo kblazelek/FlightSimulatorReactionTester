@@ -30,14 +30,14 @@
         {
             this.buttonStart = new System.Windows.Forms.Button();
             this.richTextBoxReactionTimes = new System.Windows.Forms.RichTextBox();
-            this.buttonLoadFutureEventSet = new System.Windows.Forms.Button();
-            this.labelLoadedFutureEventSet = new System.Windows.Forms.Label();
             this.buttonChangeOutputDirectory = new System.Windows.Forms.Button();
             this.labelOutputDirectory = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxArrowScreen = new System.Windows.Forms.ComboBox();
             this.comboBoxSquareScreen = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBoxFutureEventSets = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -57,24 +57,6 @@
             this.richTextBoxReactionTimes.Size = new System.Drawing.Size(434, 178);
             this.richTextBoxReactionTimes.TabIndex = 1;
             this.richTextBoxReactionTimes.Text = "";
-            // 
-            // buttonLoadFutureEventSet
-            // 
-            this.buttonLoadFutureEventSet.Location = new System.Drawing.Point(33, 13);
-            this.buttonLoadFutureEventSet.Name = "buttonLoadFutureEventSet";
-            this.buttonLoadFutureEventSet.Size = new System.Drawing.Size(140, 23);
-            this.buttonLoadFutureEventSet.TabIndex = 3;
-            this.buttonLoadFutureEventSet.Text = "Load FES";
-            this.buttonLoadFutureEventSet.UseVisualStyleBackColor = true;
-            this.buttonLoadFutureEventSet.Click += new System.EventHandler(this.buttonLoadFutureEventSet_Click);
-            // 
-            // labelLoadedFutureEventSet
-            // 
-            this.labelLoadedFutureEventSet.AutoSize = true;
-            this.labelLoadedFutureEventSet.Location = new System.Drawing.Point(188, 18);
-            this.labelLoadedFutureEventSet.Name = "labelLoadedFutureEventSet";
-            this.labelLoadedFutureEventSet.Size = new System.Drawing.Size(0, 13);
-            this.labelLoadedFutureEventSet.TabIndex = 4;
             // 
             // buttonChangeOutputDirectory
             // 
@@ -128,24 +110,41 @@
             this.comboBoxSquareScreen.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSquareScreen.TabIndex = 10;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(31, 18);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(126, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Choose Future Event Set";
+            // 
+            // comboBoxFutureEventSets
+            // 
+            this.comboBoxFutureEventSets.FormattingEnabled = true;
+            this.comboBoxFutureEventSets.Location = new System.Drawing.Point(177, 15);
+            this.comboBoxFutureEventSets.Name = "comboBoxFutureEventSets";
+            this.comboBoxFutureEventSets.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxFutureEventSets.TabIndex = 12;
+            // 
             // SettingsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(720, 511);
+            this.Controls.Add(this.comboBoxFutureEventSets);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBoxSquareScreen);
             this.Controls.Add(this.comboBoxArrowScreen);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelOutputDirectory);
             this.Controls.Add(this.buttonChangeOutputDirectory);
-            this.Controls.Add(this.labelLoadedFutureEventSet);
-            this.Controls.Add(this.buttonLoadFutureEventSet);
             this.Controls.Add(this.richTextBoxReactionTimes);
             this.Controls.Add(this.buttonStart);
             this.Name = "SettingsWindow";
             this.Text = "Client";
-            this.Load += new System.EventHandler(this.ClientWindow_Load);
+            this.Load += new System.EventHandler(this.SettingsWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,14 +154,14 @@
 
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.RichTextBox richTextBoxReactionTimes;
-        private System.Windows.Forms.Button buttonLoadFutureEventSet;
-        private System.Windows.Forms.Label labelLoadedFutureEventSet;
         private System.Windows.Forms.Button buttonChangeOutputDirectory;
         private System.Windows.Forms.Label labelOutputDirectory;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxArrowScreen;
         private System.Windows.Forms.ComboBox comboBoxSquareScreen;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBoxFutureEventSets;
     }
 }
 

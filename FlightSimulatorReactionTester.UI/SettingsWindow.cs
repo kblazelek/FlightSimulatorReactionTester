@@ -23,20 +23,10 @@ namespace FlightSimulatorReactionTester.UI
         private FutureEventSet futureEventSet;
         public List<Screen> ScreensArrow = new List<Screen>();
         public List<Screen> ScreensSquare = new List<Screen>();
+        public List<FileInfo> FutureEventSets = new List<FileInfo>();
         public SettingsWindow()
         {
             InitializeComponent();
-            foreach(var screen in Screen.AllScreens)
-            {
-                ScreensArrow.Add(screen);
-                ScreensSquare.Add(screen);
-            }
-            comboBoxArrowScreen.DataSource = ScreensArrow;
-            comboBoxArrowScreen.DisplayMember = "DeviceName";
-            comboBoxArrowScreen.SelectedIndex = 0;
-            comboBoxSquareScreen.DataSource = ScreensSquare;
-            comboBoxSquareScreen.DisplayMember = "DeviceName";
-            comboBoxSquareScreen.SelectedIndex = ScreensSquare.Count > 1 ? 1 : 0;
         }
 
         private void AppendToRichTextBox(string textToAppend)
@@ -47,30 +37,6 @@ namespace FlightSimulatorReactionTester.UI
                 richTextBoxReactionTimes.SelectionStart = richTextBoxReactionTimes.Text.Length;
                 richTextBoxReactionTimes.ScrollToCaret();
             });
-        }
-
-        private void ClientWindow_Load(object sender, EventArgs e)
-        {
-            labelLoadedFutureEventSet.Text = "No Future Event Set selected";
-            var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Results");
-            labelOutputDirectory.Text = outputDirectory;
-            //var filename = @"C:\Users\Traxx\Desktop\FES.xml";
-            //futureEventSet = FutureEventSet.Load(filename);
-            //labelLoadedFutureEventSet.Text = filename;
-        }
-
-        private void LoadFutureEventSet()
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Select Future Event Set file";
-            fdlg.Filter = "XML documents (.xml)|*.xml";
-            fdlg.RestoreDirectory = true;
-            if (fdlg.ShowDialog() == DialogResult.OK)
-            {
-                string filename = fdlg.FileName;
-                futureEventSet = FutureEventSet.Load(filename);
-                labelLoadedFutureEventSet.Text = filename;
-            }
         }
 
         private void ChangeOutputDirectory()
@@ -85,47 +51,50 @@ namespace FlightSimulatorReactionTester.UI
             }
         }
 
-        private void buttonLoadFutureEventSet_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                LoadFutureEventSet();
-            }
-            catch(Exception ex)
-            {
-                AppendToRichTextBox($"Could not load selected Future Event Set file. {ex.Message}");
-            }
-        }
-
         private void buttonStart_Click(object sender, EventArgs e)
         {
             try
             {
+                var selectedItem = comboBoxFutureEventSets.SelectedItem;
+                if (selectedItem == null)
+                {
+                    throw new Exception("No future event set selected");
+                }
+                var pathToFutureEventSet = ((FileInfo)selectedItem).FullName;
+                try
+                {
+                    futureEventSet = FutureEventSet.Load(pathToFutureEventSet);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception($"Couldn't load FutureEventSet from {pathToFutureEventSet}");
+                }
                 if (futureEventSet == null)
                 {
                     throw new Exception("Select Future Event Set file first");
                 }
-                if(futureEventSet.Count == 0)
+                if (futureEventSet.Count == 0)
                 {
                     throw new Exception("FutureEventSet file contains no Future Events");
                 }
-                if(String.IsNullOrEmpty(labelOutputDirectory.Text))
+                if (String.IsNullOrEmpty(labelOutputDirectory.Text))
                 {
                     throw new Exception("No output directory specified");
                 }
-                if(Program.FlightSimulatorWindow == null)
+                if (Program.FlightSimulatorWindow == null)
                 {
                     Program.FlightSimulatorWindow = new FlightSimulatorWindow();
-                    Program.FlightSimulatorWindow.SimulationEnding += delegate {
+                    Program.FlightSimulatorWindow.SimulationEnding += delegate
+                    {
                         var reactionTimes = Program.FlightSimulatorWindow.GetSimulationResult();
-                        if(Directory.Exists(labelOutputDirectory.Text) == false)
+                        if (Directory.Exists(labelOutputDirectory.Text) == false)
                         {
                             Directory.CreateDirectory(labelOutputDirectory.Text);
                         }
                         var filePath = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss") + ".xml");
                         AppendToRichTextBox($"Saved result to: {filePath}\n");
                         reactionTimes.Save(filePath);
-                        foreach(var reactionTime in reactionTimes)
+                        foreach (var reactionTime in reactionTimes)
                         {
                             AppendToRichTextBox($"Reaction time: {reactionTime.ReactionTimeMilliseconds}\n");
                         }
@@ -147,7 +116,7 @@ namespace FlightSimulatorReactionTester.UI
                 this.Hide();
                 Program.FlightSimulatorWindow.StartSimulation(futureEventSet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AppendToRichTextBox($"Could not load start simulation. {ex.Message}");
             }
@@ -156,6 +125,38 @@ namespace FlightSimulatorReactionTester.UI
         private void buttonChangeOutputDirectory_Click(object sender, EventArgs e)
         {
             ChangeOutputDirectory();
+        }
+
+        private void SettingsWindow_Load(object sender, EventArgs e)
+        {
+            foreach (var screen in Screen.AllScreens)
+            {
+                ScreensArrow.Add(screen);
+                ScreensSquare.Add(screen);
+            }
+            comboBoxArrowScreen.DataSource = ScreensArrow;
+            comboBoxArrowScreen.DisplayMember = "DeviceName";
+            comboBoxArrowScreen.SelectedIndex = 0;
+            comboBoxSquareScreen.DataSource = ScreensSquare;
+            comboBoxSquareScreen.DisplayMember = "DeviceName";
+            comboBoxSquareScreen.SelectedIndex = ScreensSquare.Count > 1 ? 1 : 0;
+            var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Results");
+            labelOutputDirectory.Text = outputDirectory;
+            var futureEventSetsDir = Path.Combine(Directory.GetCurrentDirectory(), "FutureEventSets");
+            if (Directory.Exists(futureEventSetsDir))
+            {
+                var paths = Directory.GetFiles(futureEventSetsDir, "*.xml").ToList();
+                if (paths.Count == 0)
+                {
+                    AppendToRichTextBox($"There are no FutureEventSets in {futureEventSetsDir}");
+                }
+                foreach (var path in paths)
+                {
+                    FutureEventSets.Add(new FileInfo(path));
+                }
+            }
+            comboBoxFutureEventSets.DataSource = FutureEventSets;
+            comboBoxFutureEventSets.DisplayMember = "Name";
         }
     }
 }
