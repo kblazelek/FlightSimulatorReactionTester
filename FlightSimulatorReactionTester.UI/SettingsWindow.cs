@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -37,13 +38,15 @@ namespace FlightSimulatorReactionTester.UI
 
         private void ClientWindow_Load(object sender, EventArgs e)
         {
-            this.labelLoadedFutureEventSet.Text = "No Future Event Set selected";
+            labelLoadedFutureEventSet.Text = "No Future Event Set selected";
+            var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Results");
+            labelOutputDirectory.Text = outputDirectory;
             //var filename = @"C:\Users\Traxx\Desktop\FES.xml";
             //futureEventSet = FutureEventSet.Load(filename);
             //labelLoadedFutureEventSet.Text = filename;
         }
 
-        private void LoadFile()
+        private void LoadFutureEventSet()
         {
             OpenFileDialog fdlg = new OpenFileDialog();
             fdlg.Title = "Select Future Event Set file";
@@ -57,11 +60,23 @@ namespace FlightSimulatorReactionTester.UI
             }
         }
 
+        private void ChangeOutputDirectory()
+        {
+            using (var folderBrowserDialog = new FolderBrowserDialog())
+            {
+                DialogResult result = folderBrowserDialog.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                {
+                    labelOutputDirectory.Text = folderBrowserDialog.SelectedPath;
+                }
+            }
+        }
+
         private void buttonLoadFutureEventSet_Click(object sender, EventArgs e)
         {
             try
             {
-                LoadFile();
+                LoadFutureEventSet();
             }
             catch(Exception ex)
             {
@@ -79,16 +94,27 @@ namespace FlightSimulatorReactionTester.UI
                 }
                 if(futureEventSet.Count == 0)
                 {
-                    throw new Exception("FutureEventSet contains no Future Events");
+                    throw new Exception("FutureEventSet file contains no Future Events");
+                }
+                if(String.IsNullOrEmpty(labelOutputDirectory.Text))
+                {
+                    throw new Exception("No output directory specified");
                 }
                 if(Program.FlightSimulatorWindow == null)
                 {
                     Program.FlightSimulatorWindow = new FlightSimulatorWindow();
                     Program.FlightSimulatorWindow.SimulationEnding += delegate {
-                        var rectionTimes = Program.FlightSimulatorWindow.GetReactionTimes();
-                        foreach(var reactionTime in rectionTimes)
+                        var reactionTimes = Program.FlightSimulatorWindow.GetSimulationResult();
+                        if(Directory.Exists(labelOutputDirectory.Text) == false)
                         {
-                            AppendToRichTextBox($"Reaction time: {reactionTime}\n");
+                            Directory.CreateDirectory(labelOutputDirectory.Text);
+                        }
+                        var filePath = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss") + ".xml");
+                        AppendToRichTextBox($"Saved result to: {filePath}\n");
+                        reactionTimes.Save(filePath);
+                        foreach(var reactionTime in reactionTimes)
+                        {
+                            AppendToRichTextBox($"Reaction time: {reactionTime.ReactionTimeMilliseconds}\n");
                         }
                         this.Show();
                         this.TopMost = true;
@@ -103,6 +129,11 @@ namespace FlightSimulatorReactionTester.UI
             {
                 AppendToRichTextBox($"Could not load start simulation. {ex.Message}");
             }
+        }
+
+        private void buttonChangeOutputDirectory_Click(object sender, EventArgs e)
+        {
+            ChangeOutputDirectory();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace FlightSimulatorReactionTester.UI
 {
     public partial class FlightSimulatorWindow : Form
     {
-        List<TimeSpan> _reactionTimes;
+        FutureEventSetResult _futureEventSetResult;
         PictureBox _pictureBox;
         FutureEventSet _futureEventSet;
         IEnumerator<FutureEvent> _futureEventEnumerator;
@@ -77,7 +77,7 @@ namespace FlightSimulatorReactionTester.UI
                         _pictureBox.Image = null;
                         _pictureBox.Refresh();
                     }
-                    _reactionTimes.Add(_reactionTimer.Elapsed);
+                    _futureEventSetResult.Add(new FutureEventResult(_reactionTimer.Elapsed, _futureEventEnumerator.Current));
                 });
                 if (_futureEventEnumerator.MoveNext())
                 {
@@ -107,7 +107,7 @@ namespace FlightSimulatorReactionTester.UI
 
         public void StartSimulation(FutureEventSet futureEventSet)
         {
-            _reactionTimes = new List<TimeSpan>();
+            _futureEventSetResult = new FutureEventSetResult();
             this._futureEventSet = futureEventSet;
             _futureEventEnumerator = futureEventSet.GetEnumerator();
             _futureEventEnumerator.MoveNext();
@@ -165,9 +165,9 @@ namespace FlightSimulatorReactionTester.UI
             this.Controls.Add(_pictureBox);
         }
 
-        public List<TimeSpan> GetReactionTimes()
+        public FutureEventSetResult GetSimulationResult()
         {
-            return _reactionTimes;
+            return _futureEventSetResult;
         }
 
         public void ShowArrow(Arrow arrow)

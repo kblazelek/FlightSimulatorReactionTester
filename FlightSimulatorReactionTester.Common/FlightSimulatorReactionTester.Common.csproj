@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FutureEventResult.cs" />
+    <Compile Include="FutureEventSetResult.cs" />
     <Compile Include="MultimediaTimer.cs" />
     <Compile Include="Enums\Arrow.cs" />
     <Compile Include="FutureEvent.cs" />
