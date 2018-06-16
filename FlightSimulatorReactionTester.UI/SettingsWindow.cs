@@ -21,9 +21,22 @@ namespace FlightSimulatorReactionTester.UI
     public partial class SettingsWindow : Form
     {
         private FutureEventSet futureEventSet;
+        public List<Screen> ScreensArrow = new List<Screen>();
+        public List<Screen> ScreensSquare = new List<Screen>();
         public SettingsWindow()
         {
             InitializeComponent();
+            foreach(var screen in Screen.AllScreens)
+            {
+                ScreensArrow.Add(screen);
+                ScreensSquare.Add(screen);
+            }
+            comboBoxArrowScreen.DataSource = ScreensArrow;
+            comboBoxArrowScreen.DisplayMember = "DeviceName";
+            comboBoxArrowScreen.SelectedIndex = 0;
+            comboBoxSquareScreen.DataSource = ScreensSquare;
+            comboBoxSquareScreen.DisplayMember = "DeviceName";
+            comboBoxSquareScreen.SelectedIndex = ScreensSquare.Count > 1 ? 1 : 0;
         }
 
         private void AppendToRichTextBox(string textToAppend)
@@ -121,6 +134,15 @@ namespace FlightSimulatorReactionTester.UI
                         this.BringToFront();
                     };
                 }
+
+                // Display arrows on selected screen
+                Screen arrowScreen = (Screen)comboBoxArrowScreen.SelectedItem;
+                Program.FlightSimulatorWindow.StartPosition = FormStartPosition.Manual;
+                Program.FlightSimulatorWindow.Bounds = arrowScreen.Bounds;
+
+                // Tell FlightSimulatorWindow which screen should display square indicator
+                Screen squareScreen = (Screen)comboBoxSquareScreen.SelectedItem;
+                Program.FlightSimulatorWindow.SquareScreen = squareScreen;
                 Program.FlightSimulatorWindow.Show();
                 this.Hide();
                 Program.FlightSimulatorWindow.StartSimulation(futureEventSet);

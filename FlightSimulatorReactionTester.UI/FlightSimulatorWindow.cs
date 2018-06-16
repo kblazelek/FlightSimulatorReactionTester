@@ -26,6 +26,8 @@ namespace FlightSimulatorReactionTester.UI
         static MultimediaTimer _changeArrowTimer;
         static Stopwatch _reactionTimer;
         public event Action SimulationEnding;
+        public Screen SquareScreen;
+        SquareIndicatorWindow squareIndicatorWindow = new SquareIndicatorWindow();
         bool WatchForMouseClicks
         {
             get
@@ -77,6 +79,7 @@ namespace FlightSimulatorReactionTester.UI
                         _pictureBox.Image = null;
                         _pictureBox.Refresh();
                     }
+                    squareIndicatorWindow.Hide();
                     _futureEventSetResult.Add(new FutureEventResult(_reactionTimer.Elapsed, _futureEventEnumerator.Current));
                 });
                 if (_futureEventEnumerator.MoveNext())
@@ -107,6 +110,10 @@ namespace FlightSimulatorReactionTester.UI
 
         public void StartSimulation(FutureEventSet futureEventSet)
         {
+            squareIndicatorWindow.StartPosition = FormStartPosition.Manual;
+            squareIndicatorWindow.Bounds = new Rectangle(0, SquareScreen.Bounds.Height - 100, 100, 100);
+            squareIndicatorWindow.FormBorderStyle = FormBorderStyle.None;
+            squareIndicatorWindow.TopMost = true;
             _futureEventSetResult = new FutureEventSetResult();
             this._futureEventSet = futureEventSet;
             _futureEventEnumerator = futureEventSet.GetEnumerator();
@@ -188,6 +195,7 @@ namespace FlightSimulatorReactionTester.UI
                     break;
             }
             this._pictureBox.Refresh();
+            squareIndicatorWindow.Show();
         }
     }
 }
