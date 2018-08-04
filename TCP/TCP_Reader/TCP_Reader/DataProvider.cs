@@ -46,8 +46,9 @@ namespace TCP_Reader
         /// </summary>
         public void Start()
         {
+            bool endTransmission = false;
             attempts = 0;
-            while (true)
+            while (endTransmission == false)
             {
                 try
                 {
@@ -63,23 +64,31 @@ namespace TCP_Reader
                                 if (counter < _header.Size)
                                 {
                                     _header.AddValue(counter, (int)reader.ReadUInt32());
+                                    counter++;
                                 }
                                 // When whole header was received
                                 else if (counter == _header.Size)
                                 {
                                     OnHeaderReceived?.Invoke(_header);
+                                    counter++;
                                 }
-                                // When sample was received from TCP Writer
-                                else if (_samplesToRead == null || counter < _samplesToRead + _header.Size)
+                                // When sample was received from TCP Writer and we have no limit on received samples
+                                else if (_samplesToRead == null)
                                 {
                                     NextValue?.Invoke(reader.ReadDouble());
+                                }
+                                // When sample was received from TCP Writer and we have limit on received samples
+                                else if (counter < _samplesToRead + _header.Size)
+                                {
+                                    NextValue?.Invoke(reader.ReadDouble());
+                                    counter++; // We know that the counter won't overflow, since transmission will stop after reaching _samplesToRead + _header.Size samples
                                 }
                                 // When we have received desired amount of samples
                                 else
                                 {
+                                    endTransmission = true;
                                     break;
                                 }
-                                counter++;
                             }
                         }
                     }
