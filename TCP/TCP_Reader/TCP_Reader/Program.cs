@@ -170,9 +170,10 @@ namespace TCP_Reader
                     Console.Write($"{outputArrowState};");
                     Console.Write(Environment.NewLine);
                 }
+
+                // Store last arrow value from current chunk
+                lastArrowStateFromPreviousChunk = arrowStates[channels * samplesPerChannel - 1];
             }
-            // Store last arrow value from current chunk
-            lastArrowStateFromPreviousChunk = arrowStates[channels * samplesPerChannel - 1];
 
             // Increment number of values received from TCP Writer
             counter++;
