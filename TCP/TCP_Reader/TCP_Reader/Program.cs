@@ -162,7 +162,7 @@ namespace TCP_Reader
                         {
                             if (arrowStates[i * channels + k] != outputArrowState)
                             {
-                                outputArrowState = arrowStates[i * channels + k];
+                                outputArrowState = arrowStates[i * channels + k] == 0 ? 2 : 1;
                                 break;
                             }
                         }
