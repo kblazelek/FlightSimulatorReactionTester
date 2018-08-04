@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP_Writer", ".\TCP_Writer\TCP_Writer\TCP_Writer.csproj", "{6DD23349-6B0C-42A2-951E-E18ECCD90A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP_Reader", ".\TCP_Reader\TCP_Reader\TCP_Reader.csproj", "{DB2D4978-3149-4DD7-8465-5D9875D939C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB2D4978-3149-4DD7-8465-5D9875D939C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB2D4978-3149-4DD7-8465-5D9875D939C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB2D4978-3149-4DD7-8465-5D9875D939C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB2D4978-3149-4DD7-8465-5D9875D939C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE852B2C-CDBE-4AE1-88ED-4F1222912825}
+	EndGlobalSection
+EndGlobal
