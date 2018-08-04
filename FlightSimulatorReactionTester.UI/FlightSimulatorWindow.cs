@@ -157,14 +157,14 @@ namespace FlightSimulatorReactionTester.UI
         private void FlightSimulatorWindow_Load(object sender, EventArgs e)
         {
             this.Controls.Clear();
-            this.BackColor = Color.LimeGreen;
-            this.TransparencyKey = Color.LimeGreen;
+            this.BackColor = Color.Black;
+            //this.TransparencyKey = Color.LimeGreen;
             this.TopMost = true;
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             _pictureBox = new PictureBox
             {
-                BackColor = Color.LimeGreen,
+                BackColor = Color.Black,
                 Name = "pictureBox1",
                 Dock = DockStyle.Fill,
                 SizeMode = PictureBoxSizeMode.CenterImage
