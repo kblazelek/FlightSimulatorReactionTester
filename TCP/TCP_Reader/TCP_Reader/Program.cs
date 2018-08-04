@@ -157,12 +157,12 @@ namespace TCP_Reader
                     }
                     else
                     {
-                        outputArrowState = arrowStates[i * samplesPerChannel];
+                        outputArrowState = arrowStates[i * channels];
                         for (int k = 1; k < channels; k++)
                         {
-                            if (arrowStates[i * samplesPerChannel + k] != outputArrowState)
+                            if (arrowStates[i * channels + k] != outputArrowState)
                             {
-                                outputArrowState = arrowStates[i * samplesPerChannel + k];
+                                outputArrowState = arrowStates[i * channels + k];
                                 break;
                             }
                         }
