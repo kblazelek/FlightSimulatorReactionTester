@@ -106,6 +106,7 @@ namespace FlightSimulatorReactionTester.UI
             MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
+            tcpReader.Stop();
             SimulationEnding?.Invoke();
             this.Invoke((MethodInvoker)delegate
             {

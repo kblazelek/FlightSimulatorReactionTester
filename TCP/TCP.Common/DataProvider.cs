@@ -17,6 +17,7 @@ namespace TCP.Common
         private readonly int _retryTimes;
         private int attempts;
         private readonly TimeSpan _sleepTime;
+        private volatile bool endTransmission;
 
         public DataProvider(string hostName, int port, int retryTimes, TimeSpan sleepTime)
         {
@@ -42,11 +43,19 @@ namespace TCP.Common
         public event GenericEvent<Header> OnHeaderReceived;
 
         /// <summary>
+        /// Stops listening for data from TCP Writer
+        /// </summary>
+        public void Stop()
+        {
+            endTransmission = true;
+        }
+
+        /// <summary>
         /// Starts listening for data from TCP Writer
         /// </summary>
         public void Start()
         {
-            bool endTransmission = false;
+            endTransmission = false;
             attempts = 0;
             while (endTransmission == false)
             {
@@ -61,6 +70,10 @@ namespace TCP.Common
                             var reader = new BinaryReader(networkStream);
                             while (true)
                             {
+                                if(endTransmission)
+                                {
+                                    break;
+                                }
                                 if (counter < _header.Size)
                                 {
                                     _header.AddValue(counter, (int)reader.ReadUInt32());

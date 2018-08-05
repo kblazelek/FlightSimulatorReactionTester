@@ -118,6 +118,14 @@ namespace TCP.Common
         }
 
         /// <summary>
+        /// Stops listening for data from TCP Writer
+        /// </summary>
+        public void Stop()
+        {
+            dataProvider.Stop();
+        }
+
+        /// <summary>
         /// Event handler called when <see cref="DataProvider"/> has received header from TCP Writer 
         /// </summary>
         /// <param name="header"></param>
