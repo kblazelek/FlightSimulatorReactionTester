@@ -66,7 +66,7 @@ namespace FlightSimulatorReactionTester.UI
                 {
                     futureEventSet = FutureEventSet.Load(pathToFutureEventSet);
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
                     throw new Exception($"Couldn't load FutureEventSet from {pathToFutureEventSet}");
                 }

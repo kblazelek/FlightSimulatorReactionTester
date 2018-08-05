@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,14 +31,16 @@ namespace TCP.Common
             }
         }
 
+        private volatile bool stopAfterCurrentChunk = false;
+
         /// <summary>
-        /// Counter of received numbers from TCP Writer (excluding header)
+        /// Number of values received in current chunk.
         /// </summary>
-        private int counter = 0;
+        private int chunkCounter = 0;
 
         /// <summary>
         /// Chunk size - data from TCP Writer is sent in chunks of size channels * samples per channel
-        /// </summary>
+        /// </summary>  
         private int chunkSize;
 
         /// <summary>
@@ -120,9 +123,9 @@ namespace TCP.Common
         /// <summary>
         /// Stops listening for data from TCP Writer
         /// </summary>
-        public void Stop()
+        public void StopAfterCurrentChunk()
         {
-            dataProvider.Stop();
+            stopAfterCurrentChunk = true;
         }
 
         /// <summary>
@@ -148,16 +151,17 @@ namespace TCP.Common
         /// <param name="e">Value received from TCP Writer</param>
         private void DataProvider_NextValue(double e)
         {
-            long outputArrowState;
-
             // Store received value
-            chunk[counter % chunkSize] = e;
+            chunk[chunkCounter] = e;
 
             // Store current arrow state
-            arrowStates[counter % chunkSize] = CurrentArrowState;
+            arrowStates[chunkCounter] = CurrentArrowState;
+
+            // Increment number of values received in current chunk
+            chunkCounter++;
 
             // If last sample from chunk was received, then output whole chunk in CSV format
-            if ((counter + 1) % chunkSize == 0)
+            if (chunkCounter == chunkSize)
             {
                 for (int i = 0; i < samplesPerChannel; i++)
                 {
@@ -165,10 +169,12 @@ namespace TCP.Common
                     {
                         chunkBuilder.Append($"{chunk[j * samplesPerChannel + i]};");
                     }
-                    // Determine arrow value based on row of arrow values
+
+                    // Determine output arrow value based on row of arrow values
                     // If arrow was invisible (0) and changed to (1) => value is 1
                     // If arrow was visible (1) and changed to (0), then button must have been clicked => value is 2
                     // If arrow was constant for each channel (0 or 1) => value is equal to that constant (0 or 1)
+                    long outputArrowState;
 
                     // If first arrow in current chunk is different from last arrow from previous chunk
                     if (i == 0 && lastArrowStateFromPreviousChunk != -1 && (arrowStates[0] != lastArrowStateFromPreviousChunk))
@@ -193,12 +199,22 @@ namespace TCP.Common
 
                 // Store last arrow value from current chunk
                 lastArrowStateFromPreviousChunk = arrowStates[channels * samplesPerChannel - 1];
-                File.AppendAllText(_outputFilePath, chunkBuilder.ToString());
-                chunkBuilder.Clear();
-            }
 
-            // Increment number of values received from TCP Writer
-            counter++;
+                // Append chunk data to a file
+                File.AppendAllText(_outputFilePath, chunkBuilder.ToString());
+
+                // Clear data in StringBuilder
+                chunkBuilder.Clear();
+
+                // Reset number of values received in current chunk to 0 for next iteration
+                chunkCounter = 0;
+
+                // Stop listening for next chunks when requested
+                if(stopAfterCurrentChunk)
+                {
+                    dataProvider.Stop();
+                }
+            }
         }
     }
 }
