@@ -51,7 +51,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TCP.Common\TCP.Common.csproj">
+    <ProjectReference Include="..\TCP.Common\TCP.Common.csproj">
       <Project>{f31b5faf-2126-4cba-aa66-9144ccfc5a3d}</Project>
       <Name>TCP.Common</Name>
     </ProjectReference>
