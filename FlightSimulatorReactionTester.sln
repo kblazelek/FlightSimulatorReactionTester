@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightSimulatorReactionTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightSimulatorReactionTester.FutureEventSetEditor", "FlightSimulatorReactionTester.FutureEventSetEditor\FlightSimulatorReactionTester.FutureEventSetEditor.csproj", "{8A4CA0A0-2B59-4F88-B57D-563665C5522D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP.Common", "TCP\TCP.Common\TCP.Common.csproj", "{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCP.Writer", "TCP\TCP.Writer\TCP.Writer.csproj", "{6DD23349-6B0C-42A2-951E-E18ECCD90A87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{8A4CA0A0-2B59-4F88-B57D-563665C5522D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A4CA0A0-2B59-4F88-B57D-563665C5522D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A4CA0A0-2B59-4F88-B57D-563665C5522D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD23349-6B0C-42A2-951E-E18ECCD90A87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,6 +46,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq" />
@@ -119,6 +120,10 @@
     <ProjectReference Include="..\FlightSimulatorReactionTester.Common\FlightSimulatorReactionTester.Common.csproj">
       <Project>{66d94106-e1e7-4003-be7a-b847af2fed86}</Project>
       <Name>FlightSimulatorReactionTester.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TCP\TCP.Common\TCP.Common.csproj">
+      <Project>{F31B5FAF-2126-4CBA-AA66-9144CCFC5A3D}</Project>
+      <Name>TCP.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

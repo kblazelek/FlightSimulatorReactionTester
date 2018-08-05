@@ -4,6 +4,7 @@ using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -114,7 +115,16 @@ namespace FlightSimulatorReactionTester.UI
                 Program.FlightSimulatorWindow.SquareScreen = squareScreen;
                 Program.FlightSimulatorWindow.Show();
                 this.Hide();
-                Program.FlightSimulatorWindow.StartSimulation(futureEventSet);
+
+                // Read settings from App.config
+                string samplesToRead = ConfigurationManager.AppSettings["SamplesToRead"];
+                string hostName = ConfigurationManager.AppSettings["Hostname"];
+                int port = int.Parse(ConfigurationManager.AppSettings["Port"]);
+                int retryTimes = int.Parse(ConfigurationManager.AppSettings["RetryTimes"]);
+                TimeSpan sleepTime = TimeSpan.FromSeconds(int.Parse(ConfigurationManager.AppSettings["SleepSeconds"]));
+                string outputFile = ConfigurationManager.AppSettings["OutputFile"];
+
+                Program.FlightSimulatorWindow.StartSimulation(futureEventSet, hostName, port, retryTimes, sleepTime, outputFile);
             }
             catch (Exception ex)
             {

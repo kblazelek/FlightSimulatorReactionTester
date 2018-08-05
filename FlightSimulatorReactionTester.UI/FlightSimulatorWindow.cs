@@ -10,14 +10,17 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TCP.Common;
 
 namespace FlightSimulatorReactionTester.UI
 {
     public partial class FlightSimulatorWindow : Form
     {
         FutureEventSetResult _futureEventSetResult;
+        TCPReader tcpReader;
         PictureBox _pictureBox;
         FutureEventSet _futureEventSet;
         IEnumerator<FutureEvent> _futureEventEnumerator;
@@ -55,6 +58,7 @@ namespace FlightSimulatorReactionTester.UI
                 {
                     ShowArrow(currentArrow);
                 });
+                tcpReader.CurrentArrowState = 1;
                 _reactionTimer = new Stopwatch();
                 _reactionTimer.Start();
                 MouseHook.ChangeButtonEvent(ArrowToButtonEvent(currentArrow));
@@ -72,6 +76,7 @@ namespace FlightSimulatorReactionTester.UI
             {
                 WatchForMouseClicks = false;
                 _reactionTimer.Stop();
+                tcpReader.CurrentArrowState = 0;
                 this.Invoke((MethodInvoker)delegate
                 {
                     if (_pictureBox.Image != null)
@@ -108,8 +113,15 @@ namespace FlightSimulatorReactionTester.UI
             });
         }
 
-        public void StartSimulation(FutureEventSet futureEventSet)
+        public void StartSimulation(FutureEventSet futureEventSet, string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
         {
+            tcpReader = new TCPReader(hostName, port, retryTimes, sleepTime, outputFilePath);
+            // Start TCP Reader in separate thread
+            new Thread(() =>
+            {
+                tcpReader.Start();
+            }).Start();
+            tcpReader.CurrentArrowState = 0;
             squareIndicatorWindow.StartPosition = FormStartPosition.Manual;
             squareIndicatorWindow.Bounds = new Rectangle(0, SquareScreen.Bounds.Height - 100, 100, 100);
             squareIndicatorWindow.FormBorderStyle = FormBorderStyle.None;
