@@ -92,9 +92,9 @@ namespace FlightSimulatorReactionTester.UI
                         {
                             Directory.CreateDirectory(labelOutputDirectory.Text);
                         }
-                        var filePath = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss") + ".xml");
-                        AppendToRichTextBox($"Saved result to: {filePath}\n");
-                        reactionTimes.Save(filePath);
+                        var reactionTimesFilePath = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss") + "_ReactionTimes.xml");
+                        AppendToRichTextBox($"Saved result to: {reactionTimesFilePath}\n");
+                        reactionTimes.Save(reactionTimesFilePath);
                         foreach (var reactionTime in reactionTimes)
                         {
                             AppendToRichTextBox($"Reaction time: {reactionTime.ReactionTimeMilliseconds}\n");
@@ -122,7 +122,7 @@ namespace FlightSimulatorReactionTester.UI
                 int port = int.Parse(ConfigurationManager.AppSettings["Port"]);
                 int retryTimes = int.Parse(ConfigurationManager.AppSettings["RetryTimes"]);
                 TimeSpan sleepTime = TimeSpan.FromSeconds(int.Parse(ConfigurationManager.AppSettings["SleepSeconds"]));
-                string outputFile = ConfigurationManager.AppSettings["OutputFile"];
+                var outputFile = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss") + "_EEG.csv");
 
                 Program.FlightSimulatorWindow.StartSimulation(futureEventSet, hostName, port, retryTimes, sleepTime, outputFile);
             }

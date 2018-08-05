@@ -5,7 +5,7 @@
     <Delay>3000</Delay>
   </FutureEvent>
   <FutureEvent>
-    <Arrow>Up</Arrow>
+    <Arrow>Left</Arrow>
     <Delay>4000</Delay>
   </FutureEvent>
   <FutureEvent>
@@ -13,7 +13,7 @@
     <Delay>2000</Delay>
   </FutureEvent>
   <FutureEvent>
-    <Arrow>Down</Arrow>
+    <Arrow>Right</Arrow>
     <Delay>3000</Delay>
   </FutureEvent>
 </FutureEventSet>
