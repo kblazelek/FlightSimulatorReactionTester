@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading;
+using TCP.Common;
 
-namespace TCP_Reader
+namespace TCP.Reader
 {
     class Program
     {

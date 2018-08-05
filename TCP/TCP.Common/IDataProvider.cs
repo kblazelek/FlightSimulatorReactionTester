@@ -1,4 +1,4 @@
-﻿namespace TCP_Reader
+﻿namespace TCP.Common
 {
     public interface IDataProvider<T>
     {

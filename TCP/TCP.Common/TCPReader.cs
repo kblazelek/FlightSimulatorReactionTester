@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace TCP_Reader
+namespace TCP.Common
 {
     public class TCPReader
     {

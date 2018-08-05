@@ -4,7 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Configuration;
 
-namespace TCP_Reader
+namespace TCP.Common
 {
     public delegate void GenericEvent<T>(T value);
 
