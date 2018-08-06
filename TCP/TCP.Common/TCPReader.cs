@@ -28,6 +28,7 @@ namespace TCP.Common
             set
             {
                 Interlocked.Exchange(ref _currentArrowState, value);
+                //File.AppendAllText(@"C:\Users\Traxx\Desktop\log.txt", $"CurrentArrowState={value}\n");
             }
         }
 
@@ -83,7 +84,7 @@ namespace TCP.Common
         public TCPReader(string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
         {
             _outputFilePath = outputFilePath;
-            if(File.Exists(_outputFilePath))
+            if (File.Exists(_outputFilePath))
             {
                 File.Delete(_outputFilePath);
             }
@@ -121,7 +122,7 @@ namespace TCP.Common
         }
 
         /// <summary>
-        /// Stops listening for data from TCP Writer
+        /// Stops listening for data from TCP Writer when full chunk is received and arrow state from last chunk is equal to 0
         /// </summary>
         public void StopAfterCurrentChunk()
         {
@@ -138,7 +139,7 @@ namespace TCP.Common
             samplesPerChannel = header.SamplesPerChunk;
             chunkSize = channels * samplesPerChannel;
             chunk = new double[chunkSize];
-            arrowStates = new long[chunkSize];
+            arrowStates = new long[samplesPerChannel];
             lastArrowStateFromPreviousChunk = -1;
 
             // Print out header information in CSV format
@@ -154,8 +155,12 @@ namespace TCP.Common
             // Store received value
             chunk[chunkCounter] = e;
 
-            // Store current arrow state
-            arrowStates[chunkCounter] = CurrentArrowState;
+            // Record arrow states for first samplesPerChannel values in a chunk (samples from channel 0)
+            if (chunkCounter < samplesPerChannel)
+            {
+                arrowStates[chunkCounter] = CurrentArrowState;
+                //File.AppendAllText(@"C:\Users\Traxx\Desktop\log.txt", $"arrowStates[{chunkCounter}]={arrowStates[chunkCounter]}\n");
+            }
 
             // Increment number of values received in current chunk
             chunkCounter++;
@@ -176,29 +181,30 @@ namespace TCP.Common
                     // If arrow was constant for each channel (0 or 1) => value is equal to that constant (0 or 1)
                     long outputArrowState;
 
-                    // If first arrow in current chunk is different from last arrow from previous chunk
-                    if (i == 0 && lastArrowStateFromPreviousChunk != -1 && (arrowStates[0] != lastArrowStateFromPreviousChunk))
+                    long arrowStateFromCurrentSample = arrowStates[i];
+                    long arrowStateFromPreviousSample = i == 0 ? lastArrowStateFromPreviousChunk : arrowStates[i - 1];
+                    if (arrowStateFromCurrentSample == arrowStateFromPreviousSample)
                     {
-                        outputArrowState = lastArrowStateFromPreviousChunk == 0 ? 1 : 2;
+                        outputArrowState = arrowStateFromCurrentSample;
                     }
                     else
                     {
-                        outputArrowState = arrowStates[i * channels];
-                        for (int k = 1; k < channels; k++)
+                        if (lastArrowStateFromPreviousChunk != -1)
                         {
-                            if (arrowStates[i * channels + k] != outputArrowState)
-                            {
-                                outputArrowState = arrowStates[i * channels + k] == 0 ? 2 : 1;
-                                break;
-                            }
+                            outputArrowState = arrowStateFromCurrentSample == 0 ? 2 : 1;
+                        }
+                        else
+                        {
+                            outputArrowState = arrowStateFromCurrentSample;
                         }
                     }
+                    //File.AppendAllText(@"C:\Users\Traxx\Desktop\log.txt", $"outputArrowState={outputArrowState}\n");
                     chunkBuilder.Append($"{outputArrowState};");
                     chunkBuilder.Append(Environment.NewLine);
                 }
 
                 // Store last arrow value from current chunk
-                lastArrowStateFromPreviousChunk = arrowStates[channels * samplesPerChannel - 1];
+                lastArrowStateFromPreviousChunk = arrowStates[samplesPerChannel - 1];
 
                 // Append chunk data to a file
                 File.AppendAllText(_outputFilePath, chunkBuilder.ToString());
@@ -210,7 +216,7 @@ namespace TCP.Common
                 chunkCounter = 0;
 
                 // Stop listening for next chunks when requested
-                if(stopAfterCurrentChunk)
+                if (stopAfterCurrentChunk && lastArrowStateFromPreviousChunk == 0)
                 {
                     dataProvider.Stop();
                 }

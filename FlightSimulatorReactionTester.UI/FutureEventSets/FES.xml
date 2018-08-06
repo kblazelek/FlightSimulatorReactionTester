@@ -16,4 +16,20 @@
     <Arrow>Right</Arrow>
     <Delay>3000</Delay>
   </FutureEvent>
+    <FutureEvent>
+    <Arrow>Left</Arrow>
+    <Delay>3000</Delay>
+  </FutureEvent>
+  <FutureEvent>
+    <Arrow>Left</Arrow>
+    <Delay>4000</Delay>
+  </FutureEvent>
+  <FutureEvent>
+    <Arrow>Right</Arrow>
+    <Delay>2000</Delay>
+  </FutureEvent>
+  <FutureEvent>
+    <Arrow>Right</Arrow>
+    <Delay>3000</Delay>
+  </FutureEvent>
 </FutureEventSet>

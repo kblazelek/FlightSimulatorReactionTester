@@ -19,7 +19,7 @@ namespace TCP.Writer
                 TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 5678);
                 server.Start();
                 int channels = 14;
-                int samplesPerChannel = 32;
+                int samplesPerChannel = 1;
                 while (true)
                 {
                     // Wait for client to connect
@@ -64,7 +64,7 @@ namespace TCP.Writer
                                 ns.Write(sampleBytes, 0, sampleBytes.Length);
 
                                 // Sleep between sending next sample
-                                Thread.Sleep(10);
+                                Thread.Sleep(8);
                             }
                         }
                     }
