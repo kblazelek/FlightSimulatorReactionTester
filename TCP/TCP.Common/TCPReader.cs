@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -80,6 +81,8 @@ namespace TCP.Common
         private readonly string _outputFilePath;
 
         private StringBuilder chunkBuilder = new StringBuilder();
+
+        private NumberFormatInfo numberFormatInfo = new NumberFormatInfo() { NumberDecimalSeparator = "." };
 
         public TCPReader(string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
         {
@@ -172,7 +175,7 @@ namespace TCP.Common
                 {
                     for (int j = 0; j < channels; j++)
                     {
-                        chunkBuilder.Append($"{chunk[j * samplesPerChannel + i]};");
+                        chunkBuilder.Append($"{chunk[j * samplesPerChannel + i].ToString("E10", numberFormatInfo)};");
                     }
 
                     // Determine output arrow value based on row of arrow values
@@ -209,13 +212,14 @@ namespace TCP.Common
                 // Append chunk data to a file
                 File.AppendAllText(_outputFilePath, chunkBuilder.ToString());
 
-                // Clear data in StringBuilder
+                // Clear data in StringBuilder for next iteration
                 chunkBuilder.Clear();
 
                 // Reset number of values received in current chunk to 0 for next iteration
                 chunkCounter = 0;
 
-                // Stop listening for next chunks when requested
+                // Stop listening for next chunks when requested and last arrow state from previous chunk is 0
+                // Otherwise we would lose data for user's last click
                 if (stopAfterCurrentChunk && lastArrowStateFromPreviousChunk == 0)
                 {
                     dataProvider.Stop();
