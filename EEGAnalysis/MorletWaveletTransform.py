@@ -1,6 +1,7 @@
 import pywt
 import numpy as np
 import matplotlib.pyplot as plt
+from pylab import *
 import scipy.fftpack
 
 N = 1280  # Number of samplepoints
@@ -18,10 +19,13 @@ for i in range(0, x.size - 1):
     else:
         y[i] = np.sin(12.0 * 2.0 * np.pi * x[i])  # 12 Hz sinusoid (6-10S)
 
-# Plot original signal
+# Prepare grid of subplots
 fig = plt.figure()
-fig.subplots_adjust(hspace=0.4, wspace=0.4)
-plt.subplot(2, 1, 1)
+gs = GridSpec(3, 1)
+fig.subplots_adjust(hspace=0.8, wspace=0.8)
+
+# Plot original signal
+fig.add_subplot(gs[0, 0])
 plt.title('Original signal')
 plt.xlabel('Time [s]')
 plt.ylabel('Amplitude')
@@ -30,7 +34,7 @@ plt.plot(x, y)
 # Calculate and show FFT of signal
 yf = scipy.fftpack.fft(y)
 xf = np.linspace(0.0, 1.0 / (2.0 * T), N / 2)
-plt.subplot(2, 1, 2)
+fig.add_subplot(gs[1:, 0])
 plt.title('FFT of signal')
 plt.xlabel('Frequency [Hz]')
 plt.ylabel('Amplitude')
