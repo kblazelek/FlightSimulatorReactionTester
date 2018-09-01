@@ -21,3 +21,18 @@ class ArrowStateParser:
             if arrow_states[i] == 1 and arrow_states[i - 1] == 0:
                 arrows_shown[i] = 1
         return arrows_shown
+
+    def get_indexes_when_arrow_appeared_on_screen(self, arrow_states):
+        """
+        Returns indexes when arrow appeared on the screen.
+        I.e. for arrow states [0, 0, 1, 1, 1, 2, 0] returns [2]
+        :param arrow_states: 1d array of arrow states of values 0, 1 or 2
+        :return: 1d array with indexes when arrow appeared on the screen
+        """
+        indexes = list()
+        if arrow_states[0] == 1:
+            indexes.append(0)
+        for i in range(1, arrow_states.size - 1): # chyba zly range
+            if arrow_states[i] == 1 and arrow_states[i - 1] == 0:
+                indexes.append(i)
+        return np.asarray(indexes)
