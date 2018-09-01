@@ -33,7 +33,23 @@ namespace TCP.Common
             }
         }
 
-        private volatile bool stopAfterCurrentChunk = false;
+        private long _chunksToReadBeforeEnd;
+        /// <summary>
+        /// Number to chunks to read when stop is requested
+        /// </summary>
+        public long ChunksToReadBeforeEnd
+        {
+            get
+            {
+                return Interlocked.Read(ref _chunksToReadBeforeEnd);
+            }
+            set
+            {
+                Interlocked.Exchange(ref _chunksToReadBeforeEnd, value);
+            }
+        }
+
+        private volatile bool stopRequested = false;
 
         /// <summary>
         /// Number of values received in current chunk.
@@ -80,12 +96,19 @@ namespace TCP.Common
         /// </summary>
         private readonly string _outputFilePath;
 
+        /// <summary>
+        /// Header in CSV format that will be added as first row in output csv file.
+        /// Example header: AF3;F7;F3;FC5;T7;P7;O1;O2;P8;T8;FC6;F4;F8;AF4;ArrowState;Sampling Rate
+        /// </summary>
+        private readonly string _eegCSVHeader;
+
         private StringBuilder chunkBuilder = new StringBuilder();
 
         private NumberFormatInfo numberFormatInfo = new NumberFormatInfo() { NumberDecimalSeparator = "." };
 
-        public TCPReader(string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
+        public TCPReader(string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath, string eegCSVHeader)
         {
+            _eegCSVHeader = eegCSVHeader;
             _outputFilePath = outputFilePath;
             if (File.Exists(_outputFilePath))
             {
@@ -100,8 +123,9 @@ namespace TCP.Common
             dataProvider.OnHeaderReceived += DataProvider_OnHeaderReceived;
         }
 
-        public TCPReader(int samplesToRead, string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
+        public TCPReader(int samplesToRead, string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath, string eegCSVHeader)
         {
+            _eegCSVHeader = eegCSVHeader;
             _outputFilePath = outputFilePath;
             if (File.Exists(_outputFilePath))
             {
@@ -121,21 +145,27 @@ namespace TCP.Common
         /// </summary>
         public void Start()
         {
+            ChunksToReadBeforeEnd = 25;
+
+            // Write CSV Header
+            File.AppendAllText(_outputFilePath, _eegCSVHeader + Environment.NewLine);
+
+            stopRequested = false;
             dataProvider.Start();
         }
 
         /// <summary>
-        /// Stops listening for data from TCP Writer when full chunk is received and arrow state from last chunk is equal to 0
+        /// Stops listening for data from TCP Writer after receiving next ChunksToReadBeforeEnd chunks
         /// </summary>
-        public void StopAfterCurrentChunk()
+        public void Stop()
         {
-            stopAfterCurrentChunk = true;
+            stopRequested = true;
         }
 
         /// <summary>
         /// Event handler called when <see cref="DataProvider"/> has received header from TCP Writer 
         /// </summary>
-        /// <param name="header"></param>
+        /// <param name="header">Header information from TCP Writer</param>
         private void DataProvider_OnHeaderReceived(Header header)
         {
             channels = header.NumberOfChannels;
@@ -144,9 +174,6 @@ namespace TCP.Common
             chunk = new double[chunkSize];
             arrowStates = new long[samplesPerChannel];
             lastArrowStateFromPreviousChunk = -1;
-
-            // Print out header information in CSV format
-            chunkBuilder.AppendLine(header.ToCSVString());
         }
 
         /// <summary>
@@ -220,9 +247,17 @@ namespace TCP.Common
 
                 // Stop listening for next chunks when requested and last arrow state from previous chunk is 0
                 // Otherwise we would lose data for user's last click
-                if (stopAfterCurrentChunk && lastArrowStateFromPreviousChunk == 0)
+                if (stopRequested)
                 {
-                    dataProvider.Stop();
+                    long tempChunksToRead = ChunksToReadBeforeEnd;
+                    if(tempChunksToRead == 0)
+                    {
+                        dataProvider.Stop();
+                    }
+                    else
+                    {
+                        ChunksToReadBeforeEnd = tempChunksToRead - 1;
+                    }
                 }
             }
         }

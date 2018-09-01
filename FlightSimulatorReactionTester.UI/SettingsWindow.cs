@@ -1,6 +1,5 @@
 ﻿using FlightSimulatorReactionTester.Common;
 using FlightSimulatorReactionTester.Common.Enums;
-using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -119,12 +118,13 @@ namespace FlightSimulatorReactionTester.UI
                 // Read settings from App.config
                 string samplesToRead = ConfigurationManager.AppSettings["SamplesToRead"];
                 string hostName = ConfigurationManager.AppSettings["Hostname"];
+                string eegCSVHeader = ConfigurationManager.AppSettings["EEG_CSV_Header"];
                 int port = int.Parse(ConfigurationManager.AppSettings["Port"]);
                 int retryTimes = int.Parse(ConfigurationManager.AppSettings["RetryTimes"]);
                 TimeSpan sleepTime = TimeSpan.FromSeconds(int.Parse(ConfigurationManager.AppSettings["SleepSeconds"]));
                 var outputFile = Path.Combine(labelOutputDirectory.Text, DateTime.Now.ToString("yyyy.MM.dd_HH.mm.ss") + "_EEG.csv");
 
-                Program.FlightSimulatorWindow.StartSimulation(futureEventSet, hostName, port, retryTimes, sleepTime, outputFile);
+                Program.FlightSimulatorWindow.StartSimulation(futureEventSet, hostName, port, retryTimes, sleepTime, outputFile, eegCSVHeader);
             }
             catch (Exception ex)
             {
@@ -151,6 +151,10 @@ namespace FlightSimulatorReactionTester.UI
             comboBoxSquareScreen.DisplayMember = "DeviceName";
             comboBoxSquareScreen.SelectedIndex = ScreensSquare.Count > 1 ? 1 : 0;
             var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Results");
+            if(!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
             labelOutputDirectory.Text = outputDirectory;
             var futureEventSetsDir = Path.Combine(Directory.GetCurrentDirectory(), "FutureEventSets");
             if (Directory.Exists(futureEventSetsDir))

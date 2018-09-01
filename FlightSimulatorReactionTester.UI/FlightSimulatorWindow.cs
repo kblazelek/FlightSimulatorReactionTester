@@ -106,7 +106,7 @@ namespace FlightSimulatorReactionTester.UI
             MouseHook.Stop();
             _reactionTimer.Stop();
             _changeArrowTimer.Stop();
-            tcpReader.StopAfterCurrentChunk();
+            tcpReader.Stop();
             SimulationEnding?.Invoke();
             this.Invoke((MethodInvoker)delegate
             {
@@ -114,9 +114,9 @@ namespace FlightSimulatorReactionTester.UI
             });
         }
 
-        public void StartSimulation(FutureEventSet futureEventSet, string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath)
+        public void StartSimulation(FutureEventSet futureEventSet, string hostName, int port, int retryTimes, TimeSpan sleepTime, string outputFilePath, string eegCSVHeader)
         {
-            tcpReader = new TCPReader(hostName, port, retryTimes, sleepTime, outputFilePath);
+            tcpReader = new TCPReader(hostName, port, retryTimes, sleepTime, outputFilePath, eegCSVHeader);
             // Start TCP Reader in separate thread
             new Thread(() =>
             {
