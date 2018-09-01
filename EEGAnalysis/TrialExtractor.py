@@ -32,3 +32,14 @@ def extract_trials(eeg_with_arrows_data_frame, samples_before_event, samples_aft
         row_range = slice(event_row - samples_before_event, event_row + samples_after_event)
         trials[:, :, i] = eeg_with_arrows_data_frame.loc[row_range, channels]
     return trials
+
+def extract_trials_with_arrow_shown_in_the_middle(eeg_with_arrows_data_frame, samples_before_event, samples_after_event, channels):
+    arrowStates = eeg_with_arrows_data_frame.values[:, 14]
+    event_row_numbers = ArrowStateParser().get_indexes_when_arrow_appeared_on_screen(arrowStates)
+    total_samples_per_trial = samples_before_event + 1 + samples_after_event
+    trials = np.zeros((total_samples_per_trial, len(channels), event_row_numbers.size))
+    for i in range(0, event_row_numbers.size):
+        event_row = event_row_numbers[i]  # Gets row number where arrow was clicked (event)
+        row_range = slice(event_row - samples_before_event, event_row + samples_after_event)
+        trials[:, :, i] = eeg_with_arrows_data_frame.loc[row_range, channels]
+    return trials
