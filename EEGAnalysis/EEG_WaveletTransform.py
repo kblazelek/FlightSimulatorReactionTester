@@ -103,7 +103,7 @@ for channel_index in range(0, len(channels)):
         plt.set_cmap('jet')
         plt.clim(-3, 3)
         plt.xlim([-400, 1000])
-        plt.title(f"Liczba cykli falki: {cycles[cyclei]}")
+        plt.title(f"Liczba cykli falki: {cycles[cycle_index]}")
         plt.xlabel('Czas [ms]')
         plt.ylabel('Częstotliwość [Hz]')
         plt.savefig(f"{wtDir}/WT{flightNumber}_{channel_name}.png", format='png', bbox_inches='tight')
