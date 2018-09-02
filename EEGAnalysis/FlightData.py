@@ -1,7 +1,7 @@
 import numpy as np
 from pandas import read_csv, DataFrame
 import TrialExtractor as te
-
+import FutureEventResultParser
 
 def get_trials(flight_number, samples_before_event, samples_after_event, remove_artifacts=True):
     channels = ['AF3', 'F7', 'F3', 'FC5', 'T7', 'P7', 'O1', 'O2', 'P8', 'T8', 'FC6', 'F4', 'F8', 'AF4']
@@ -57,3 +57,13 @@ def get_trials(flight_number, samples_before_event, samples_after_event, remove_
                         trials.shape[0])
 
     return trials, times, sample_rate, channels
+
+def get_future_event_set_result(flight_number):
+    if flight_number == 1:
+        reactionTimes, arrows, delays = FutureEventResultParser.parse('./Data/2018.17.8_15.32.00_ReactionTimes.xml')
+    elif flight_number == 2:
+        reactionTimes, arrows, delays = FutureEventResultParser.parse('./Data/2018.08.20_15.00.21_ReactionTimes.xml')
+    elif flight_number == 3:
+        reactionTimes, arrows, delays = FutureEventResultParser.parse('./Data/2018.08.30_14.52.28_ReactionTimes.xml')
+
+    return reactionTimes, arrows, delays
