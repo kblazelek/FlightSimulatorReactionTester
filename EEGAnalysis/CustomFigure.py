@@ -41,6 +41,18 @@ def get_custom_figure():
     return fig
 
 
+def get_custom_figure2x2(id=None):
+    if type(id) == int:
+        fig = plt.figure(id)
+    else:
+        fig = plt.figure()
+    fig.subplots_adjust(hspace=0.44, wspace=0.2, left=0.07, right=0.99, top=0.95, bottom=0.1)
+    fig.set_size_inches(19.20, 10.80)
+    fig.set_dpi(100)
+    plt.rcParams.update({'font.size': 22})
+    return fig
+
+
 def get_color_for_channel(channel_name):
     return channel_color_dictionary[channel_name]
 
