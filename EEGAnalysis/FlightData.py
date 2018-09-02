@@ -65,6 +65,21 @@ def get_trials(flight_number, samples_before_event, samples_after_event, remove_
     return trials, times, sample_rate, channels
 
 
+def get_trials_for_arrow(flight_number, arrow_name, samples_before_event, samples_after_event, remove_artifacts=True):
+    trials, times, sample_rate, channels = get_trials(flight_number, samples_before_event, samples_after_event,
+                                                      remove_artifacts)
+    reaction_times, arrows, delays = get_future_event_set_result(flight_number, remove_artifacts)
+    arrows_data_frame = DataFrame(arrows)
+
+    # Find indexes where requested arrow appeared
+    indexes_to_keep = arrows_data_frame.loc[arrows_data_frame[0] == arrow_name].index
+
+    # Filter trials so that only trials for requested arrow remain
+    trials = trials[:, :, indexes_to_keep]
+
+    return trials, times, sample_rate, channels
+
+
 def get_future_event_set_result(flight_number, remove_data_from_faulty_trials=True):
     if flight_number == 1:
         reaction_times, arrows, delays = FutureEventResultParser.parse('./Data/2018.17.8_15.32.00_ReactionTimes.xml')
@@ -89,5 +104,20 @@ def get_future_event_set_result(flight_number, remove_data_from_faulty_trials=Tr
         reaction_times = reaction_times[indexes_to_keep]
         arrows = arrows[indexes_to_keep]
         delays = delays[indexes_to_keep]
+
+    return reaction_times, arrows, delays
+
+
+def get_future_event_set_result_for_arrow(flight_number, arrow_name, remove_data_from_faulty_trials=True):
+    reaction_times, arrows, delays = get_future_event_set_result(flight_number, remove_data_from_faulty_trials)
+    arrows_data_frame = DataFrame(arrows)
+
+    # Find indexes where requested arrow appeared
+    indexes_to_keep = arrows_data_frame.loc[arrows_data_frame[0] == arrow_name].index
+
+    # Filter arrays so that only data for requested arrow remain
+    reaction_times = reaction_times[indexes_to_keep]
+    arrows = arrows[indexes_to_keep]
+    delays = delays[indexes_to_keep]
 
     return reaction_times, arrows, delays
