@@ -14,7 +14,7 @@ def find_nearest_indice(array, value):
 wtDir = './Images/WT'
 if not os.path.exists(wtDir):
     os.makedirs(wtDir)
-flightNumber = 1
+flightNumber = 3
 (trials, times, sample_rate, channels) = FlightData.get_trials(flightNumber, 150, 150)
 
 # Morlet wavelet frequencies
@@ -26,7 +26,6 @@ cycles = [4, 6, 8, 15]
 coefficients = MorletWavelet.transform(trials, times, sample_rate, channels, cycles, frequencies)
 # Plot results
 CustomFigure.get_custom_figure()
-gs = plt.GridSpec(len(cycles), 1)
 for channel_index in range(0, coefficients.shape[0]):
     channel_name = channels[channel_index]
     print(f"Saving result of Morlet Wavelet Transform on channel {channel_name}")
@@ -39,6 +38,7 @@ for channel_index in range(0, coefficients.shape[0]):
         plt.title(f"Liczba cykli falki: {cycles[cycle_index]}")
         plt.xlabel('Czas [ms]')
         plt.ylabel('Częstotliwość [Hz]')
+        plt.colorbar()
         plt.savefig(f"{wtDir}/WT{flightNumber}_{channel_name}.png", format='png', bbox_inches='tight')
     plt.clf()
 

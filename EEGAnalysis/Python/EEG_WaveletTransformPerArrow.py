@@ -16,7 +16,7 @@ wtpaDir = './Images/WTPA'
 if not os.path.exists(wtpaDir):
     os.makedirs(wtpaDir)
 
-arrows = ['Left', 'Right', 'Up', 'Down']
+arrows = ['Left', 'Right']
 flightNumbers = [1, 2, 3]
 
 # Morlet wavelet frequencies
@@ -35,7 +35,7 @@ for flightNumber in flightNumbers:
         for channel_index in range(0, coefficients.shape[0]):
             channel_name = channels[channel_index]
             CustomFigure.get_custom_figure2x2(channel_index)
-            plt.subplot(2, 2, arrow_index+1)
+            plt.subplot(1, 2, arrow_index+1)
             plt.contourf(times, frequencies, np.squeeze(coefficients[channel_index, 0, :, :]), 40)
             plt.set_cmap('jet')
             plt.clim(-3, 3)
@@ -43,10 +43,11 @@ for flightNumber in flightNumbers:
             plt.title(CustomFigure.get_polish_translation_for_arrow(arrow_name))
             plt.xlabel('Czas [ms]')
             plt.ylabel('Częstotliwość [Hz]')
+            plt.colorbar()
 
     for channel_index in range(0, coefficients.shape[0]):
         channel_name = channels[channel_index]
-        CustomFigure.get_custom_figure2x2(channel_index)
+        CustomFigure.get_custom_figure(channel_index)
         print(f"Saving result of Morlet Wavelet Transform on channel {channel_name}")
         plt.savefig(f"{wtpaDir}/WTPA{flightNumber}_{channel_name}.png", format='png', bbox_inches='tight')
         # Clear figure after drawing wavelet transform results for all arrows in current flight

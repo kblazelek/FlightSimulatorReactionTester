@@ -6,15 +6,10 @@ import FutureEventResultParser
 
 def get_trials_to_skip(flight_number):
     if flight_number == 1:
-        # 22 and 51 was detected using butterfly plot
-        # 0, 1, 2, 4, 8, 24, 25, 26, 28, 29, 38, 43, 44, 45 was detected using ERP plot
         return [0, 1, 2, 4, 8, 22, 24, 25, 26, 28, 29, 38, 43, 44, 45, 51]
     elif flight_number == 2:
-        # 51 was detected using butterfly plot
-        # 13, 14, 25, 36, 37, 38 was detected using ERP plot
         return [13, 14, 25, 36, 37, 38, 51]
     elif flight_number == 3:
-        # all were detected by ERP plot
         return [0, 1, 3, 4, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 29, 36, 37,
                 38, 39, 42, 45, 46, 55, 56]
     else:
@@ -26,15 +21,15 @@ def get_trials(flight_number, samples_before_event, samples_after_event, remove_
     channels_to_skip = []
     trials_to_skip = get_trials_to_skip(flight_number)
     if flight_number == 1:
-        data = read_csv('./Data/2018.17.8_14.31.16_EEG_With_Header.csv', sep=";")
+        data = read_csv('./../../../Data/Flight1_EEG.csv', sep=";")
         sample_rate = 128.0
         channels_to_skip = ['T8']
     elif flight_number == 2:
-        data = read_csv('./Data/2018.08.20_13.59.46_EEG.csv', sep=";")
+        data = read_csv('./../../../Data/Flight2_EEG.csv', sep=";")
         sample_rate = 128.0
         channels_to_skip = ['T8']
     elif flight_number == 3:
-        data = read_csv('./Data/2018.08.30_13.51.46_EEG.csv', sep=";")
+        data = read_csv('./../../../Data/Flight3_EEG.csv', sep=";")
         sample_rate = 128.0
         channels_to_skip = ['F4']
     else:
@@ -82,11 +77,11 @@ def get_trials_for_arrow(flight_number, arrow_name, samples_before_event, sample
 
 def get_future_event_set_result(flight_number, remove_data_from_faulty_trials=True):
     if flight_number == 1:
-        reaction_times, arrows, delays = FutureEventResultParser.parse('./Data/2018.17.8_15.32.00_ReactionTimes.xml')
+        reaction_times, arrows, delays = FutureEventResultParser.parse('./../../../Data/Flight1_ReactionTimes.xml')
     elif flight_number == 2:
-        reaction_times, arrows, delays = FutureEventResultParser.parse('./Data/2018.08.20_15.00.21_ReactionTimes.xml')
+        reaction_times, arrows, delays = FutureEventResultParser.parse('./../../../Data/Flight2_ReactionTimes.xml')
     elif flight_number == 3:
-        reaction_times, arrows, delays = FutureEventResultParser.parse('./Data/2018.08.30_14.52.28_ReactionTimes.xml')
+        reaction_times, arrows, delays = FutureEventResultParser.parse('./../../../Data/Flight3_ReactionTimes.xml')
     else:
         raise ValueError(f"There was no flight with number {flight_number}")
 

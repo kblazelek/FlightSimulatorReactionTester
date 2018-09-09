@@ -21,7 +21,8 @@ if not os.path.exists(rtDir):
 flightNumber = 3
 
 removeArtifacts = False
-reactionTimes, arrows, delays = FlightData.get_future_event_set_result(flightNumber, removeArtifacts)
+#reactionTimes, arrows, delays = FlightData.get_future_event_set_result(flightNumber, removeArtifacts)
+reactionTimes, arrows, delays = FlightData.get_future_event_set_result_for_arrow(flightNumber, 'Left', removeArtifacts)
 time = np.zeros(len(reactionTimes))
 time[0] = delays[0] / 1000
 for i in range(0, len(reactionTimes)):
