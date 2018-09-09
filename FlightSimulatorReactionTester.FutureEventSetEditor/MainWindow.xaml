@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FlightSimulatorReactionTester.FutureEventSetEditor"
         xmlns:common="clr-namespace:FlightSimulatorReactionTester.Common;assembly=FlightSimulatorReactionTester.Common"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="FutureEventSet Editor"
         Height="350"
         Width="525">
     <Grid>
