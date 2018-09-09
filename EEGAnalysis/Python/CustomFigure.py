@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 
+# Settings and helper functions for plotting
+
 channel_color_dictionary = {
     "AF3": 'red',
     "F7": 'green',

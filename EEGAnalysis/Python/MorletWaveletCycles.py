@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-
+# This script demonstrates effect of cycles on gaussian and Morlet wavelet functions
 def find_nearest_indice(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()

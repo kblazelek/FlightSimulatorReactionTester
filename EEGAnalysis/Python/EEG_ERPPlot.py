@@ -4,6 +4,7 @@ import FlightData
 import CustomFigure
 import os
 
+# This script creates ERP plots for all channels
 erpDir = './Images/ERP'
 if not os.path.exists(erpDir):
     os.makedirs(erpDir)
@@ -13,7 +14,6 @@ removeArtifacts = True
 
 # ERP plot
 for channelIndex in range(0, len(channels)):
-#channelIndex = 12
     CustomFigure.get_custom_figure()
     plt.plot(times, trials[:, channelIndex, :], color='k')
     plt.plot(times, np.mean(trials[:, channelIndex, :], 1), linewidth=2, color='r')

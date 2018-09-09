@@ -4,7 +4,7 @@ import FlightData
 import CustomFigure
 import os
 
-
+# This script generates topographical variance plots
 tvDir = './Images/TV'
 if not os.path.exists(tvDir):
     os.makedirs(tvDir)

@@ -5,6 +5,8 @@ import os
 import CustomFigure
 import MorletWavelet
 
+# This script performs Morlet wavelet transform on EEG data for requested arrows
+# and normalizes output with respect to baseline
 
 def find_nearest_indice(array, value):
     array = np.asarray(array)

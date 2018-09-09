@@ -4,6 +4,7 @@ import FlightData
 import CustomFigure
 import os
 
+# This script creates ERP plots for all channels for given arrows
 erppaDir = './Images/ERPPA'
 if not os.path.exists(erppaDir):
     os.makedirs(erppaDir)

@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import os
 
+# This scripts performs FFT transform on synthesized signal
 
 def get_custom_figure():
     fig = plt.figure()

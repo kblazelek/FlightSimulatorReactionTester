@@ -12,6 +12,16 @@ def find_nearest_indice(array, value):
 
 
 def transform(trials, times, sample_rate, channels, cycles, frequencies):
+    """
+    Performs Morlet wavelet transform and normalizes output with respect to baseline
+    :param trials: EEG data (measurements x channels x trials)
+    :param times: time range for each trial, i.e. -1000 ms, -900 ms ... 0 ... 100 ms .... (0 is time of event)
+    :param sample_rate:
+    :param channels: Which channels to use
+    :param cycles: list of number of cycles. Less cycles - better precision in time, more cycles - better precision in frequency.
+    :param frequencies: Which frequencies to use in wavelet transform
+    :return: Coefficients (channels x cycles x frequencies x power)
+    """
     number_of_measurements = trials.shape[0]
     number_of_channels = trials.shape[1]
     number_of_trials = trials.shape[2]

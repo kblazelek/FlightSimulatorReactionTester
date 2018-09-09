@@ -4,6 +4,7 @@ import FlightData
 import CustomFigure
 import os
 
+# This script generates butterfly plots showing average data for all channels on single figure for selected arrows
 bppaDir = './Images/BPPA'
 if not os.path.exists(bppaDir):
     os.makedirs(bppaDir)

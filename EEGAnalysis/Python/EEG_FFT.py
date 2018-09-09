@@ -4,11 +4,13 @@ import CustomFigure
 import os
 from pandas import read_csv
 
+
+# This script creates power spectrum plot for EEG data from 1 channel
 fftDir = './Images/FFT'
 if not os.path.exists(fftDir):
     os.makedirs(fftDir)
 sample_rate = 128.0
-data = read_csv('./Data/2018.08.20_13.59.46_EEG.csv', sep=";")
+data = read_csv('./../../../Data/Flight1_EEG.csv', sep=";")
 
 # Get EEG data for channel with index 0
 channel_data = data.values[:, 0]
