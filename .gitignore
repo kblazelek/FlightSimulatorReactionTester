@@ -288,3 +288,11 @@ __pycache__/
 *.xsd.cs
 EEGAnalysis/Data/
 EEGAnalysis/Images/
+EEGAnalysis/Matlab/altmany-export_fig-e4117f8/
+EEGAnalysis/Matlab/xml2struct.m
+EEGAnalysis/Matlab/eeglab14_1_2b/
+EEGAnalysis/Matlab/TopoPlots/
+EEGAnalysis/Matlab/TopoPlotsPerArrow/
+EEGAnalysis/Matlab/xml2struct/
+EEGAnalysis/Python/Images/
+EEGAnalysis/Python/Data/
